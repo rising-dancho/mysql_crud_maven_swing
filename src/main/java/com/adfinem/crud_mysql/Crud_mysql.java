@@ -6,9 +6,11 @@ package com.adfinem.crud_mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,15 +19,21 @@ import java.util.logging.Logger;
 public class Crud_mysql extends javax.swing.JFrame {
 
     public Crud_mysql() {
-        initComponents();
+        try {
+            initComponents();
+            connnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    Connection con;
+    Connection connection;
+    PreparedStatement preparedStatement;
 
     public void connnect() throws SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/crud", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/crud", "root", "");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -87,6 +95,11 @@ public class Crud_mysql extends javax.swing.JFrame {
         jLabel4.setText("Product Id:");
 
         jButtonAdd.setText("Add");
+        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddActionPerformed(evt);
+            }
+        });
 
         jButtonUpdate.setText("Update");
 
@@ -233,6 +246,38 @@ public class Crud_mysql extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
+//    private javax.swing.JTextField jTextFieldPName;
+//    private javax.swing.JTextField jTextFieldPPrice;
+//    private javax.swing.JTextField jTextFieldPQuantity;
+
+// TODO add your handling code here:
+        String pname = jTextFieldPName.getText();
+        String pprice = jTextFieldPPrice.getText();
+        String pquantity = jTextFieldPQuantity.getText();
+
+        try {
+            //        preparedStatement is where we feed our SQL command
+            preparedStatement = connection.prepareStatement("INSERT INTO product_table (pname,pprice,pquantity) VALUES(?,?,?)");
+            preparedStatement.setString(1, pname);
+            preparedStatement.setString(2, pprice);
+            preparedStatement.setString(3, pquantity);
+
+            int execute = preparedStatement.executeUpdate();
+
+            if (execute == 1) {
+                JOptionPane.showMessageDialog(this, "Record added successfully!");
+                jTextFieldPName.setText("");
+                jTextFieldPPrice.setText("");
+                jTextFieldPQuantity.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Oops! something went wrong. Please try again..");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonAddActionPerformed
 
     public static void main(String args[]) {
         /* Create and display the form */
