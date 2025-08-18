@@ -19,18 +19,17 @@ public class Crud_mysql extends javax.swing.JFrame {
     public Crud_mysql() {
         initComponents();
     }
-    
+
     Connection con;
-    
-    public void connnect() throws SQLException{
+
+    public void connnect() throws SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/");
-                    } catch (ClassNotFoundException ex) {
+            con = DriverManager.getConnection("jdbc:mysql://localhost/crud", "root", "");
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
