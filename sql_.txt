@@ -1,0 +1,9 @@
+CREATE TABLE product_table (
+    id int NOT NULL AUTO_INCREMENT,
+    pname varchar(255),
+    pprice int(255),
+    pquantity int(255,
+    PRIMARY KEY (id)
+);
+
+DROP TABLE product_table;

@@ -7,6 +7,7 @@ package com.adfinem.crud_mysql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ public class Crud_mysql extends javax.swing.JFrame {
         try {
             initComponents();
             connnect();
+            loadProduct();
         } catch (SQLException ex) {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -29,6 +31,7 @@ public class Crud_mysql extends javax.swing.JFrame {
 
     Connection connection;
     PreparedStatement preparedStatement;
+    ResultSet resultSet;
 
     public void connnect() throws SQLException {
         try {
@@ -37,6 +40,20 @@ public class Crud_mysql extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void loadProduct() {
+        try {
+            preparedStatement = connection.prepareStatement("SELECT id from product_table");
+            resultSet = preparedStatement.executeQuery();
+            jComboBoxPId.removeAllItems();
+            while (resultSet.next()) {
+                jComboBoxPId.addItem(resultSet.getString(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -112,7 +129,7 @@ public class Crud_mysql extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap()
                 .addComponent(jButtonAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonUpdate)
@@ -120,7 +137,7 @@ public class Crud_mysql extends javax.swing.JFrame {
                 .addComponent(jButtonDelete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonNew)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(211, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,6 +152,11 @@ public class Crud_mysql extends javax.swing.JFrame {
         );
 
         jButtonSearch.setText("Search");
+        jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSearchActionPerformed(evt);
+            }
+        });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -186,12 +208,11 @@ public class Crud_mysql extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,13 +229,11 @@ public class Crud_mysql extends javax.swing.JFrame {
                                     .addComponent(jTextFieldPQuantity)
                                     .addComponent(jTextFieldPName))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jComboBoxPId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jButtonSearch, javax.swing.GroupLayout.Alignment.TRAILING)))))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jComboBoxPId, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButtonSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -248,9 +267,6 @@ public class Crud_mysql extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
-//    private javax.swing.JTextField jTextFieldPName;
-//    private javax.swing.JTextField jTextFieldPPrice;
-//    private javax.swing.JTextField jTextFieldPQuantity;
 
 // TODO add your handling code here:
         String pname = jTextFieldPName.getText();
@@ -278,6 +294,27 @@ public class Crud_mysql extends javax.swing.JFrame {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButtonAddActionPerformed
+
+    private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed
+        try {
+            // TODO add your handling code here:
+            String ProductID = jComboBoxPId.getSelectedItem().toString();
+            preparedStatement = connection.prepareStatement("SELECT * FROM product_table WHERE id=?");
+            preparedStatement.setString(1, ProductID);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next() == true) {
+                jTextFieldPName.setText(resultSet.getString(2));
+                jTextFieldPPrice.setText(resultSet.getString(3));
+                jTextFieldPQuantity.setText(resultSet.getString(4));
+            } else {
+                JOptionPane.showMessageDialog(this, "No records found!");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonSearchActionPerformed
 
     public static void main(String args[]) {
         /* Create and display the form */
