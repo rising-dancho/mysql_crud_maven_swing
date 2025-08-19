@@ -119,6 +119,11 @@ public class Crud_mysql extends javax.swing.JFrame {
         });
 
         jButtonUpdate.setText("Update");
+        jButtonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateActionPerformed(evt);
+            }
+        });
 
         jButtonDelete.setText("Delete");
 
@@ -275,7 +280,8 @@ public class Crud_mysql extends javax.swing.JFrame {
 
         try {
             //        preparedStatement is where we feed our SQL command
-            preparedStatement = connection.prepareStatement("INSERT INTO product_table (pname,pprice,pquantity) VALUES(?,?,?)");
+            String sql = "INSERT INTO product_table (pname,pprice,pquantity) VALUES(?,?,?)";
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, pname);
             preparedStatement.setString(2, pprice);
             preparedStatement.setString(3, pquantity);
@@ -299,7 +305,9 @@ public class Crud_mysql extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String ProductID = jComboBoxPId.getSelectedItem().toString();
-            preparedStatement = connection.prepareStatement("SELECT * FROM product_table WHERE id=?");
+            String sql = "SELECT * FROM product_table WHERE id=?";
+
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, ProductID);
             resultSet = preparedStatement.executeQuery();
 
@@ -315,6 +323,43 @@ public class Crud_mysql extends javax.swing.JFrame {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButtonSearchActionPerformed
+
+    private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
+        try {
+            // TODO add your handling code here:
+            String pname = jTextFieldPName.getText();
+            String pprice = jTextFieldPPrice.getText();
+            String pquantity = jTextFieldPQuantity.getText();
+            String pid = jComboBoxPId.getSelectedItem().toString();
+
+            // UPDATE table_name
+            // SET column1 = value1, column2 = value2, ...
+            // WHERE condition;
+            String sql = "UPDATE product_table SET pname = ?, pprice = ?, pquantity = ? WHERE id=?";
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, pname);
+            preparedStatement.setString(2, pprice);
+            preparedStatement.setString(3, pquantity);
+            preparedStatement.setString(4, pid);
+
+            int execute = preparedStatement.executeUpdate();
+
+            if (execute == 1) {
+                JOptionPane.showMessageDialog(this, "Record has been successfully updated!");
+                jTextFieldPName.setText("");
+                jTextFieldPPrice.setText("");
+                jTextFieldPQuantity.setText("");
+                jTextFieldPName.requestFocus();
+                loadProduct();
+            } else {
+                JOptionPane.showMessageDialog(this, "Oops! something went wrong. Please try again..");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonUpdateActionPerformed
 
     public static void main(String args[]) {
         /* Create and display the form */
