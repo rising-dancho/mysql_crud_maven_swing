@@ -126,6 +126,11 @@ public class Crud_mysql extends javax.swing.JFrame {
         });
 
         jButtonDelete.setText("Delete");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
 
         jButtonNew.setText("New");
 
@@ -353,13 +358,39 @@ public class Crud_mysql extends javax.swing.JFrame {
                 jTextFieldPName.requestFocus();
                 loadProduct();
             } else {
-                JOptionPane.showMessageDialog(this, "Oops! something went wrong. Please try again..");
+                JOptionPane.showMessageDialog(this, "Record failed to update..");
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButtonUpdateActionPerformed
+
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+        try {
+            // TODO add your handling code here:
+            // DELETE FROM table_name WHERE condition;
+            String pid = jComboBoxPId.getSelectedItem().toString();
+
+            String sql = "DELETE FROM product_table WHERE id =?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, pid);
+
+            int status = preparedStatement.executeUpdate();
+            if (status == 1) {
+                JOptionPane.showMessageDialog(this, "Record has been successfully deleted!");
+                jTextFieldPName.setText("");
+                jTextFieldPPrice.setText("");
+                jTextFieldPQuantity.setText("");
+                jTextFieldPName.requestFocus();
+                loadProduct();
+            } else {
+                JOptionPane.showMessageDialog(this, "Record failed to delete..");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Crud_mysql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
 
     public static void main(String args[]) {
         /* Create and display the form */
